@@ -1,0 +1,31 @@
+﻿<Window x:Class="CortanaSwitcher.MainWindow"
+		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:local="clr-namespace:CortanaSwitcher"
+		Title="Cortana Switcher"
+		Height="100" Width="300" ResizeMode="NoResize" SizeToContent="WidthAndHeight">
+	<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="Auto"/>
+			<ColumnDefinition Width="Auto"/>
+			<ColumnDefinition Width="Auto"/>
+		</Grid.ColumnDefinitions>
+
+		<TextBlock Grid.Column="0"
+				   Width="100"
+				   Margin="10, 8"
+				   Text="{Binding CortanaState}"/>
+
+		<Button Grid.Column="1"
+				Padding="10,8"
+				Content="Enable"
+				IsEnabled="{Binding CanEnable, Mode=OneWay}"
+				Click="EnableButton_Click"/>
+
+		<Button Grid.Column="2"
+				Padding="10,8"
+				Content="Disable"
+				IsEnabled="{Binding CanDisable, Mode=OneWay}"
+				Click="DisableButton_Click"/>
+	</Grid>
+</Window>

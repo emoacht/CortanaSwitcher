@@ -21,8 +21,7 @@ namespace CortanaSwitcher
 		{
 			InitializeComponent();
 
-			_viewModel = new MainWindowViewModel();
-			this.DataContext = _viewModel;
+			this.DataContext = _viewModel = new MainWindowViewModel();
 		}
 
 		private void EnableButton_Click(object sender, RoutedEventArgs e)

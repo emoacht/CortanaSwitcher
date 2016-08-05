@@ -22,58 +22,75 @@ namespace CortanaSwitcher
 
 		public MainWindowViewModel()
 		{
-			_isOsRedStoneOneOrNewer = OsVersion.IsRedstoneOneOrNewer;
+			_isRedstoneOneOrNewer = OsVersion.IsRedstoneOneOrNewer;
 
-			CheckCortana();
+			CheckCortana(true);
 		}
 
-		private bool _isOsRedStoneOneOrNewer;
-		private bool? _cortanaIsEnabled;
+		private bool _isRedstoneOneOrNewer;
 
-		public string CortanaState
+		private bool? _cortanaIsEnabled;
+		private bool? _cortanaIsEnabledInitial;
+
+		public string CortanaStatus
 		{
-			get { return _cortanaState; }
+			get { return _cortanaStatus; }
 			set
 			{
-				_cortanaState = value;
+				_cortanaStatus = value;
 				RaisePropertyChanged();
 				RaisePropertyChanged(nameof(CanEnable));
 				RaisePropertyChanged(nameof(CanDisable));
 			}
 		}
-		private string _cortanaState;
+		private string _cortanaStatus;
 
-		public bool CanEnable => (_isOsRedStoneOneOrNewer && (!_cortanaIsEnabled.HasValue || !_cortanaIsEnabled.Value));
-		public bool CanDisable => (_isOsRedStoneOneOrNewer && (!_cortanaIsEnabled.HasValue || _cortanaIsEnabled.Value));
+		public bool CanEnable => (_isRedstoneOneOrNewer && (!_cortanaIsEnabled.HasValue || !_cortanaIsEnabled.Value));
+		public bool CanDisable => (_isRedstoneOneOrNewer && (!_cortanaIsEnabled.HasValue || _cortanaIsEnabled.Value));
 
-		private void CheckCortana()
+		public bool ShowMessage => (_cortanaIsEnabled != _cortanaIsEnabledInitial);
+
+		private void CheckCortana(bool isInitial = false)
 		{
-			var valueData = RegManager.GetAllowCortana();
-			_cortanaIsEnabled = ConvertToNullableBoolean(valueData);
+			int data = RegAccessor.GetAllowCortana();
+			_cortanaIsEnabled = ConvertFromInt(data);
+
+			if (isInitial)
+				_cortanaIsEnabledInitial = _cortanaIsEnabled;
 
 			switch (_cortanaIsEnabled)
 			{
-				case true: CortanaState = "Cortana Enabled"; break;
-				case false: CortanaState = "Cortana Disabled"; break;
-				default: CortanaState = "Unknown"; break;
+				case true: CortanaStatus = Properties.Resources.StatusEnabled; break;
+				case false: CortanaStatus = Properties.Resources.StatusDisabled; break;
+				default: CortanaStatus = Properties.Resources.StatusUnknown; break;
 			}
 		}
 
-		public void EnableCortana()
+		public void EnableCortana() => EnableCortanaBase(true);
+		public void DisableCortana() => EnableCortanaBase(false);
+
+		private void EnableCortanaBase(bool enable)
 		{
-			RegManager.SetAllowCortana(1);
+			int data = ConvertToInt(enable);
+			RegAccessor.SetAllowCortana(data);
 
 			CheckCortana();
+			RaisePropertyChanged(nameof(ShowMessage));
 		}
 
-		public void DisableCortana()
+		#region Helper
+
+		private static bool? ConvertFromInt(int value)
 		{
-			RegManager.SetAllowCortana(0);
-
-			CheckCortana();
+			switch (value)
+			{
+				case 1: return true;
+				case 0: return false;
+				default: return null;
+			}
 		}
 
-		private static int ConvertFromNullableBoolean(bool? value)
+		private static int ConvertToInt(bool? value)
 		{
 			switch (value)
 			{
@@ -83,14 +100,6 @@ namespace CortanaSwitcher
 			}
 		}
 
-		private static bool? ConvertToNullableBoolean(int value)
-		{
-			switch (value)
-			{
-				case 1: return true;
-				case 0: return false;
-				default: return null;
-			}
-		}
+		#endregion
 	}
 }

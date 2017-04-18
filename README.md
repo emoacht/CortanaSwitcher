@@ -1,4 +1,4 @@
-﻿#Cortana Switcher
+﻿# Cortana Switcher
 
 Enable/Disable Cortana in Windows 10 Anniversary Update (Redstone 1).
 
@@ -8,10 +8,10 @@ This tool edits the registry and so requires Administrator privileges. For detai
 
  - [How to Disable Cortana in Windows 10’s Anniversary Update](http://www.howtogeek.com/265027/how-to-disable-cortana-in-windows-10/).
 
-##Download
+## Download
 
 :floppy_disk: [Download](https://github.com/emoacht/CortanaSwitcher/releases/download/0.1/CortanaSwitcher01.zip)
 
-##Licence
+## Licence
 
  - MIT License
